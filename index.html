@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IG Secure Tool Suite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .mono-font { font-family: 'JetBrains Mono', monospace; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between p-4 md:p-8">
+
+    <!-- Header -->
+    <header class="w-full max-w-4xl text-center mb-8">
+        <div class="inline-flex items-center justify-center p-3 bg-gradient-to-tr from-purple-600 to-pink-600 rounded-2xl shadow-lg mb-3">
+            <i class="fa-brands fa-instagram text-3xl text-white"></i>
+        </div>
+        <h1 class="text-3xl font-bold tracking-tight bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">Instagram Session Suite</h1>
+        <p class="text-slate-400 text-sm mt-1">Advanced Cookie Generator & Secure Extractor</p>
+    </header>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+
+        <!-- 1. Cookie Encryptor / Generator Section -->
+        <section class="glass-panel rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+            <div>
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="p-2 bg-purple-500/10 text-purple-400 rounded-lg">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h2 class="text-lg font-semibold">Cookie Encryptor & Generator</h2>
+                </div>
+                <p class="text-xs text-slate-400 mb-4">Type anything and press Enter to generate a long session cookie payload.</p>
+                
+                <div class="space-y-3">
+                    <label class="block text-xs font-medium text-slate-300">Input Text / Key</label>
+                    <textarea id="rawCookieInput" rows="3" placeholder="Type anything here and press Enter..." class="w-full bg-slate-900/50 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-purple-500 transition"></textarea>
+                </div>
+            </div>
+
+            <div class="mt-6 space-y-3">
+                <button onclick="generateAndEncrypt()" class="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-medium rounded-xl shadow-lg shadow-purple-600/20 transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Generate & Encrypt Cookie</span>
+                </button>
+
+                <div class="relative">
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Encrypted / Long Cookie Output</label>
+                    <textarea id="encryptedOutput" readonly rows="4" placeholder="Generated cookie string will appear here..." class="w-full bg-slate-900/80 border border-slate-700 rounded-xl p-3 pr-10 text-xs mono-font text-purple-300 focus:outline-none resize-none"></textarea>
+                    <button onclick="copyEncrypted(event)" class="absolute right-2 top-8 p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition" title="Copy to Clipboard">
+                        <i class="fa-regular fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Cookie Extractor Section -->
+        <section class="glass-panel rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+            <div>
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="p-2 bg-pink-500/10 text-pink-400 rounded-lg">
+                        <i class="fa-solid fa-terminal"></i>
+                    </div>
+                    <h2 class="text-lg font-semibold">Cookie Extractor</h2>
+                </div>
+                <p class="text-xs text-slate-400 mb-4">Paste the long cookie string below. The process takes 20 seconds to safely extract credentials.</p>
+                
+                <div class="space-y-3">
+                    <label class="block text-xs font-medium text-slate-300">Encrypted Token / Cookie</label>
+                    <textarea id="extractorInput" rows="3" placeholder="Paste long cookie string here..." class="w-full bg-slate-900/50 border border-slate-700 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-pink-500 transition"></textarea>
+                </div>
+            </div>
+
+            <div class="mt-6 space-y-3">
+                <button id="extractBtn" onclick="runExtraction()" class="w-full py-3 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white font-medium rounded-xl shadow-lg shadow-pink-600/20 transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-play"></i>
+                    <span>Run Extraction</span>
+                </button>
+
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="text-xs font-medium text-slate-300">Terminal Status</label>
+                        <span id="timerDisplay" class="text-xs text-pink-400 mono-font font-semibold hidden">20s remaining</span>
+                    </div>
+                    <div id="terminalOutput" class="w-full h-32 bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs mono-font text-emerald-400 overflow-y-auto space-y-1.5">
+                        <span class="text-slate-500">System ready. Waiting for input...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-slate-500 text-xs">
+        <p>&copy; 2026 IG Secure Suite. Protected Interface Tool.</p>
+    </footer>
+
+    <!-- Script Logic -->
+    <script>
+        document.getElementById('rawCookieInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                generateAndEncrypt();
+            }
+        });
+
+        function getRandomHex(length) {
+            let result = '';
+            const characters = 'abcdef0123456789';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+
+        function generateAndEncrypt() {
+            const val = document.getElementById('rawCookieInput').value.trim() || "default_user";
+            const userEncoded = btoa(encodeURIComponent(val));
+
+            const sessionId = `64${getRandomHex(8)}%3A${getRandomHex(12)}%3A23%3AAY${getRandomHex(16)}`;
+            const dsUserId = Math.floor(1000000000 + Math.random() * 9000000000);
+            const csrfToken = getRandomHex(32);
+            const mid = getRandomHex(24).toUpperCase();
+            const igDid = `${getRandomHex(8)}-${getRandomHex(4)}-${getRandomHex(4)}-${getRandomHex(4)}-${getRandomHex(12)}`.toUpperCase();
+            const customPayload = `enc_user_payload=${userEncoded}`;
+
+            const fullLongCookie = `sessionid=${sessionId}; ds_user_id=${dsUserId}; csrftoken=${csrfToken}; mid=${mid}; ig_did=${igDid}; ig_nrcb=1; datr=${getRandomHex(24)}; ${customPayload}; auth_secure_token=v2_sec_${getRandomHex(64)}`;
+
+            document.getElementById('encryptedOutput').value = fullLongCookie;
+        }
+
+        function copyEncrypted(e) {
+            const copyText = document.getElementById('encryptedOutput');
+            if(!copyText.value) return;
+            
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            
+            const btn = e.currentTarget;
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i>';
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+            }, 1500);
+        }
+
+        function runExtraction() {
+            const inputVal = document.getElementById('extractorInput').value.trim();
+            const terminal = document.getElementById('terminalOutput');
+            const extractBtn = document.getElementById('extractBtn');
+            const timerDisplay = document.getElementById('timerDisplay');
+            
+            if(!inputVal) {
+                alert('Please provide a token or cookie to extract!');
+                return;
+            }
+
+            extractBtn.disabled = true;
+            extractBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            timerDisplay.classList.remove('hidden');
+            
+            terminal.innerHTML = '<div class="text-yellow-400">[*] Initializing deep extraction tunnel...</div>';
+
+            let timeLeft = 20;
+            timerDisplay.innerText = `${timeLeft}s remaining`;
+
+            const interval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.innerText = `${timeLeft}s remaining`;
+
+                if (timeLeft === 15) {
+                    terminal.innerHTML += '<div class="text-blue-400">[+] Bypassing session security barriers...</div>';
+                } else if (timeLeft === 10) {
+                    terminal.innerHTML += '<div class="text-slate-300">[+] Decrypting authorization headers...</div>';
+                } else if (timeLeft === 5) {
+                    terminal.innerHTML += '<div class="text-purple-400">[+] Extracting credentials database records...</div>';
+                }
+                terminal.scrollTop = terminal.scrollHeight;
+
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    timerDisplay.classList.add('hidden');
+                    extractBtn.disabled = false;
+                    extractBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+                    terminal.innerHTML += `
+                        <div class="text-amber-400 font-bold mt-2">[WARNING] Server is currently heavily overloaded. It will be fully active again soon.</div>
+                    `;
+                    terminal.scrollTop = terminal.scrollHeight;
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
